@@ -56,8 +56,7 @@ def find_words(board, word, min_length):
             # need to have the unique starting position with otherwise similar letters are overwritten
             new_word = Word(board_dict[pos], [pos]) 
             adj_words.append(new_word)
-        print("Starting words", len(adj_words))
-        
+    
     else:
         #get a list of all words from all available adjacent letters
         adj_words = get_adj(board, word)
