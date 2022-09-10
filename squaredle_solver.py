@@ -50,8 +50,8 @@ def find_words(board, word, min_length):
     adj_words = []
     if word == []:
         #get starting positions
-        for pos in board_dict:
-            adj_words.append(Word(board_dict[pos], [pos]))
+        adj_words = [Word(board_dict[pos], [pos]) for pos in board_dict]
+        
     else:
         #get a list of all words from all available adjacent letters
         adj_words = get_adj(board, word)
