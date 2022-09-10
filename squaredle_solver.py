@@ -1,13 +1,36 @@
 
 
-from xml.etree.ElementPath import find
+from xml.etree.ElementTree import QName
 from nltk.corpus import words
 from nltk.corpus import wordnet
 
 
-board = [["a", "b", "x"],
+board_first = [["a", "b", "x"],
          ["c", "a", "t"],
          ["a", "", "s"]]
+
+board_tutorial = [["", "l", "a",""],
+         ["t", "r", "i", ""],
+         ["o", "u", "", ""],
+         ["", "", "t", ""]]
+
+board_base = [
+["", "", "", "", ""],
+["", "", "", "", ""],
+["", "", "", "", ""],
+["", "", "", "", ""],
+["", "", "", "", ""]
+]
+
+board_ten_sept = [
+["p", "a", "u", "s", "e"],
+["d", "t", "a", "b", "a"],
+["e", "o", "" , "c", "i"],
+["m", "r", "c", "z", "n"],
+["h", "s", "i", "p", "t"]
+]
+
+
 
 
 class Word:
@@ -87,13 +110,17 @@ def find_words(board, word, min_length):
     #loop through all possible words that are adjacent extensions of incoming word
     return_words = []
     for word_item in adj_words:
-
+        
         the_word = word_item.word
         the_positions = word_item.positions
+
+        if len(the_word) == 1:
+            print(the_word)
 
         # if the word is a real word, is long enough, and isn't already in the list, add it, you found a word!
         # xxx should use same dictionary as Squardle!
         if len(the_word) >= min_length and wordnet.synsets(the_word) and the_word not in [w.word for w in return_words]:
+            print(word_item)
             return_words.append(word_item)
         
         # recursively call function and all extended words
@@ -112,7 +139,7 @@ if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
     min_length = 4
-
+    board = board_tutorial
     board_dict = {}
     #read in board to a board dict
     for r in range(0,len(board)):
@@ -124,13 +151,15 @@ if __name__=="__main__":
                 board_dict[pos] =  letter
 
     print('Loaded %dx%d board' % (len(board), len(board[0])) )
+    for b in board:
+        print(b)
     
-    
-    words = find_words(board_dict, [], min_length)
+    print("solving...")
+    results = find_words(board_dict, [], min_length)
 
-    print("\nResults: \n[first position - word]:")
-    for x in words:
-        print('%s - %s ' % (x.positions[0], x.word))
+    print('\nResults, found %d words: \nfirst position - word' % (len(results)))
+    for w in results:
+        print('%s - %s ' % (w.positions[0], w.word))
 
 
     if False:
