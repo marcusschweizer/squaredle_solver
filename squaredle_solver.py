@@ -1,5 +1,6 @@
 
 
+from xml.etree.ElementPath import find
 from nltk.corpus import words
 from nltk.corpus import wordnet
 
@@ -46,9 +47,15 @@ def get_adj(board, word):
 def find_words(board, word, min_length):
     #print("find_words for ", word)
 
-    #get a list of all words from all available adjacent letters
-    adj_words = get_adj(board, word)
-    # xxx should do an initial if word is plank, get all single letters on board, instead of doing that in __main__
+    adj_words = []
+    if word == []:
+        #get starting positions
+        for pos in board_dict:
+            adj_words.append(Word(board_dict[pos], [pos]))
+    else:
+        #get a list of all words from all available adjacent letters
+        adj_words = get_adj(board, word)
+
 
 
     #print(len(adj_words))
@@ -80,23 +87,15 @@ if __name__=="__main__":
         for c in range(0,len(board[r])):
             pos = (r,c)
             board_dict[pos] =  board[r][c]
-    print(board_dict)
-
-    min_length = 4
-
-    
 
     print('Loaded %dx%d board' % (len(board), len(board[0])) )
-
+    print(board)
+    min_length = 4
 
     if True:
         words = []
-        for pos in board_dict:
-            word = Word(board_dict[pos], [pos])
-            print("\n\n", word)
-            words.extend(find_words(board_dict, word, min_length))
-            print("FINALLY ", len(words))
-
+        words = find_words(board_dict, [], min_length)
+        
         print("\n\n")
         for x in words:
             print(x)
