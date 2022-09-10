@@ -27,6 +27,15 @@ board_ten_sept = [
 ["h", "s", "i", "p", "t"]
 ]
 
+board_eleven_sept = [
+["a", "r", "b", "h", ""],
+["n", "c", "o", "t", ""],
+["a", "d", "n", "y", ""],
+["a", "s", "p", "s", ""],
+["", "", "", "", ""]
+]
+
+
 debug = False
 
 
@@ -116,6 +125,7 @@ def find_words(board, word, min_length, all_words):
 
         # if the word is a real word, is long enough, and isn't already in the list, add it, you found a word!
         # xxx should use same dictionary as Squardle!
+        # xxx found a couple of words in squardle not in wordnet, like carb or synth!
         if len(the_word) >= min_length and wordnet.synsets(the_word) and the_word not in [w.word for w in return_words]:
             # yay!
             debug and print(word_item)
@@ -123,9 +133,9 @@ def find_words(board, word, min_length, all_words):
         
         possible_words = [x for x in all_words if x.startswith(the_word)]
         
+        # if there is a word that starts with this combination of letters, continue - save time if not   
         if len(possible_words) > 0:
-            # if there is a word that starts with this combination of letters, continue - save time if not   
-
+            
             # recursively call function on all extended words
             next_words = find_words(board, word_item , min_length, possible_words)
         
@@ -141,7 +151,7 @@ if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
     min_length = 4
-    board = board_ten_sept
+    board = board_eleven_sept
     board_dict = {}
     #read in board to a board dict
     for r in range(0,len(board)):
@@ -161,7 +171,7 @@ if __name__=="__main__":
 
     print('\nResults, found %d words: \nfirst position - word' % (len(results)))
     for w in results:
-        print('%s - %s ' % (w.positions[0], w.word))
+        print('%s - %s\n' % (w.positions[0], w.word))
 
 
     if False:
@@ -172,5 +182,6 @@ if __name__=="__main__":
         adj_words = get_adj(board_dict,word)
         for aword in adj_words:
             print(aword)
+
 
 
