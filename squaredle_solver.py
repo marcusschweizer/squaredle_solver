@@ -1,9 +1,7 @@
 
 
-from pickle import TRUE
-import nltk
 from nltk.corpus import words
-
+from nltk.corpus import wordnet
 
 
 board = [["a", "b", "x"],
@@ -45,13 +43,13 @@ def get_adj(board, word):
 
 
 
-def find_words(board, all_words, word):
+def find_words(board, word, min_length):
     #print("find_words for ", word)
 
     #get a list of all words from all available adjacent letters
     adj_words = get_adj(board, word)
+    # xxx should do an initial if word is plank, get all single letters on board, instead of doing that in __main__
 
-    #startswith = lambda x : x in 
 
     #print(len(adj_words))
     return_words = []
@@ -59,28 +57,12 @@ def find_words(board, all_words, word):
     for adj_word in adj_words:
         the_word = adj_word.word
         
-        possible_words = [x for x in all_words if x.startswith(the_word)]
-        #print("Number of possible words ", len(possible_words))
-        if len(possible_words) == 0:
-            print("n_", the_word)
-
-        if len(possible_words) == 1 and the_word == possible_words[0]:# and len(word.word) >= min_len:
-            print("FOUND a ", adj_word)
+        if len(the_word) >= min_length and wordnet.synsets(the_word) and adj_word not in return_words:
+            print("FOUND c ", adj_word)
             return_words.append(adj_word)
 
-        if len(possible_words) > 1:
-            if the_word in possible_words:
-                print("FOUND b ", adj_word)
-                return_words.append(adj_word)
-
-            if len(possible_words) > 0:
-
-                return_words.extend(find_words(board, possible_words, adj_word))
-                #if len(more_words) > 0:
-                #    return_words.extend(more_words)
-                
-            
-
+        return_words.extend(find_words(board, adj_word, min_length))
+        
     return return_words
 
     
@@ -101,18 +83,10 @@ if __name__=="__main__":
     print(board_dict)
 
     min_length = 4
-    
 
-    
-    #get all words 
-    #with open('/usr/share/dict/words') as f:
-    #    all_words = [line.strip() for line in f if len(line.strip()) >= min_length]
-
-    all_words = [word for word in words.words() if len(word) >= min_length]
     
 
     print('Loaded %dx%d board' % (len(board), len(board[0])) )
-    print('Loaded %d words' % (len(all_words)))
 
 
     if True:
@@ -120,7 +94,7 @@ if __name__=="__main__":
         for pos in board_dict:
             word = Word(board_dict[pos], [pos])
             print("\n\n", word)
-            words.extend(find_words(board_dict, all_words, word))
+            words.extend(find_words(board_dict, word, min_length))
             print("FINALLY ", len(words))
 
         print("\n\n")
@@ -138,10 +112,3 @@ if __name__=="__main__":
             print(aword)
 
 
-    if True:
-        print(all_words[:20])
-  
-        print(len(all_words))
-
-    if "cats" in all_words:
-        print("YES")
