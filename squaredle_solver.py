@@ -7,13 +7,13 @@ from nltk.corpus import wordnet
 
 board = [["a", "b", "x"],
          ["c", "a", "t"],
-         ["a", "b", "s"]]
+         ["a", "", "s"]]
 
 
 class Word:
     """Represents a possible word with list of positions
     """
-    
+
     def __init__(self, word, positions):
         self.word = word
         self.positions = positions
@@ -115,14 +115,15 @@ if __name__=="__main__":
 
     board_dict = {}
     #read in board to a board dict
-    #xxx need to be able to handle null values
     for r in range(0,len(board)):
         for c in range(0,len(board[r])):
             pos = (r,c)
-            board_dict[pos] =  board[r][c]
+            letter = board[r][c]
+            #handle blank spots
+            if letter != "":
+                board_dict[pos] =  letter
 
     print('Loaded %dx%d board' % (len(board), len(board[0])) )
-
     
     
     words = find_words(board_dict, [], min_length)
