@@ -126,8 +126,7 @@ def find_words(board, word, min_length, all_words):
         if len(possible_words) > 0:
             # if there is a word that starts with this combination of letters, continue - save time if not   
 
-            # recursively call function and all extended words
-            # xxx could filter here through a starts with in order to reduce total processing overhead
+            # recursively call function on all extended words
             next_words = find_words(board, word_item , min_length, possible_words)
         
             #append next words whilst checking that it doesn't exist in words    
