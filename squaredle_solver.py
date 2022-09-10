@@ -1,6 +1,3 @@
-
-
-from xml.etree.ElementTree import QName
 from nltk.corpus import words
 from nltk.corpus import wordnet
 
@@ -9,10 +6,10 @@ board_first = [["a", "b", "x"],
          ["c", "a", "t"],
          ["a", "", "s"]]
 
-board_tutorial = [["", "l", "a",""],
-         ["t", "r", "i", ""],
-         ["o", "u", "", ""],
-         ["", "", "t", ""]]
+board_tutorial = [["p", "l", "a","p"],
+         ["t", "r", "i", "p"],
+         ["o", "u", "p", "p"],
+         ["p", "p", "t", "p"]]
 
 board_base = [
 ["", "", "", "", ""],
@@ -30,7 +27,7 @@ board_ten_sept = [
 ["h", "s", "i", "p", "t"]
 ]
 
-
+debug = False
 
 
 class Word:
@@ -80,7 +77,7 @@ def get_adj(board, input_word):
 
 
 
-def find_words(board, word, min_length):
+def find_words(board, word, min_length, all_words):
     """recursive method to find all words on a board
     Uses nltk wordnet synsets test to establish if word exists
     Note squardle uses mariams dictionary so results may very
@@ -115,20 +112,26 @@ def find_words(board, word, min_length):
         the_positions = word_item.positions
 
         if len(the_word) == 1:
-            print(the_word)
+             debug and print(the_word)
 
         # if the word is a real word, is long enough, and isn't already in the list, add it, you found a word!
         # xxx should use same dictionary as Squardle!
         if len(the_word) >= min_length and wordnet.synsets(the_word) and the_word not in [w.word for w in return_words]:
-            print(word_item)
+            # yay!
+            debug and print(word_item)
             return_words.append(word_item)
         
-        # recursively call function and all extended words
-        # xxx could filter here through a starts with in order to reduce total processing overhead
-        next_words = find_words(board, word_item , min_length)
+        possible_words = [x for x in all_words if x.startswith(the_word)]
+        
+        if len(possible_words) > 0:
+            # if there is a word that starts with this combination of letters, continue - save time if not   
 
-        #append next words whilst checking that it doesn't exist in words    
-        return_words = return_words + [n for n in next_words if n.word not in [w.word for w in return_words]]
+            # recursively call function and all extended words
+            # xxx could filter here through a starts with in order to reduce total processing overhead
+            next_words = find_words(board, word_item , min_length, possible_words)
+        
+            #append next words whilst checking that it doesn't exist in words    
+            return_words = return_words + [n for n in next_words if n.word not in [w.word for w in return_words]]
     
         
     return return_words
@@ -139,7 +142,7 @@ if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
     min_length = 4
-    board = board_tutorial
+    board = board_ten_sept
     board_dict = {}
     #read in board to a board dict
     for r in range(0,len(board)):
@@ -155,7 +158,7 @@ if __name__=="__main__":
         print(b)
     
     print("solving...")
-    results = find_words(board_dict, [], min_length)
+    results = find_words(board_dict, [], min_length, words.words())
 
     print('\nResults, found %d words: \nfirst position - word' % (len(results)))
     for w in results:
