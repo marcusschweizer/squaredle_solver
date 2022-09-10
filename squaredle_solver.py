@@ -11,6 +11,9 @@ board = [["a", "b", "x"],
 
 
 class Word:
+    """Represents a possible word with list of positions
+    """
+    
     def __init__(self, word, positions):
         self.word = word
         self.positions = positions
@@ -21,7 +24,15 @@ class Word:
 
 
 def get_adj(board, input_word):
+    """gets all adjacent letters and finds all possible combinations to extend input_word
 
+    Arguments:
+        board {dict} -- board dictionary
+        input_word {Word} -- initial word
+
+    Returns:
+        adj_words -- all possible word combinations
+    """
 
     # row and column of last pos     
     word = input_word.word
@@ -47,7 +58,18 @@ def get_adj(board, input_word):
 
 
 def find_words(board, word, min_length):
-    #print("find_words for ", word)
+    """recursive method to find all words on a board
+    Uses nltk wordnet synsets test to establish if word exists
+    Note squardle uses mariams dictionary so results may very
+
+    Arguments:
+        board {dict} -- board dictionary
+        word {list} -- word to extend and search, blank list - [] - to start
+        min_length {int} -- minimum word length to be using.
+
+    Returns:
+        adj_words -- all possible word combinations
+    """
 
     adj_words = []
     if word == []:
@@ -62,19 +84,20 @@ def find_words(board, word, min_length):
         adj_words = get_adj(board, word)
 
 
-
-    #print(len(adj_words))
+    #loop through all possible words that are adjacent extensions of incoming word
     return_words = []
     for word_item in adj_words:
 
         the_word = word_item.word
         the_positions = word_item.positions
 
+        # if the word is a real word, is long enough, and isn't already in the list, add it, you found a word!
+        # xxx should use same dictionary as Squardle!
         if len(the_word) >= min_length and wordnet.synsets(the_word) and the_word not in [w.word for w in return_words]:
-            #print("FOUND: ", the_word, the_positions)
             return_words.append(word_item)
         
-
+        # recursively call function and all extended words
+        # xxx could filter here through a starts with in order to reduce total processing overhead
         next_words = find_words(board, word_item , min_length)
 
         #append next words whilst checking that it doesn't exist in words    
@@ -83,33 +106,30 @@ def find_words(board, word, min_length):
         
     return return_words
 
-    
-
-    
-
 
 
 if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
+    min_length = 4
+
     board_dict = {}
+    #read in board to a board dict
+    #xxx need to be able to handle null values
     for r in range(0,len(board)):
         for c in range(0,len(board[r])):
             pos = (r,c)
             board_dict[pos] =  board[r][c]
 
     print('Loaded %dx%d board' % (len(board), len(board[0])) )
-    #print(board)
 
-    min_length = 4
-
+    
     
     words = find_words(board_dict, [], min_length)
 
-
-    print("\nResults:")
+    print("\nResults: \n[first position - word]:")
     for x in words:
-        print(x.word, x.positions[0])
+        print('%s - %s ' % (x.positions[0], x.word))
 
 
     if False:
