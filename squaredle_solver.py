@@ -1,5 +1,6 @@
 from nltk.corpus import words
 from nltk.corpus import wordnet
+import bisect
 
 
 board_first = [["a", "b", "x"],
@@ -19,7 +20,7 @@ board_base = [
 ["", "", "", "", ""]
 ]
 
-board_ten_sept = [
+board_sept_ten = [
 ["p", "a", "u", "s", "e"],
 ["d", "t", "a", "b", "a"],
 ["e", "o", "" , "c", "i"],
@@ -27,12 +28,20 @@ board_ten_sept = [
 ["h", "s", "i", "p", "t"]
 ]
 
-board_eleven_sept = [
+board_sept_eleven = [
 ["a", "r", "b", "h", ""],
 ["n", "c", "o", "t", ""],
 ["a", "d", "n", "y", ""],
 ["a", "s", "p", "s", ""],
 ["", "", "", "", ""]
+]
+
+board_sept_twelve = [
+["t", "h", "h", "o", "m"],
+["r", "f", "a", "l", "e"],
+["p", "m", "y", "o", "v"],
+["p", "i", "l", "i", "t"],
+["c", "j", "e", "s", "o"]
 ]
 
 
@@ -50,6 +59,9 @@ class Word:
 
     def __str__(self):
         return '%s - %s' % (self.word, self.positions)
+
+    def __lt__(self, other):
+        return self.word < other.word
 
 
 def get_adj(board, input_word):
@@ -129,7 +141,8 @@ def find_words(board, word, min_length, all_words):
         if len(the_word) >= min_length and wordnet.synsets(the_word) and the_word not in [w.word for w in return_words]:
             # yay!
             debug and print(word_item)
-            return_words.append(word_item)
+            bisect.insort(return_words, word_item)
+            #return_words.append(word_item)
         
         possible_words = [x for x in all_words if x.startswith(the_word)]
         
@@ -140,7 +153,7 @@ def find_words(board, word, min_length, all_words):
             next_words = find_words(board, word_item , min_length, possible_words)
         
             #append next words whilst checking that it doesn't exist in words    
-            return_words = return_words + [n for n in next_words if n.word not in [w.word for w in return_words]]
+            [bisect.insort(return_words,n) for n in next_words if n.word not in [w.word for w in return_words]]
     
         
     return return_words
@@ -151,7 +164,7 @@ if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
     min_length = 4
-    board = board_eleven_sept
+    board = board_sept_twelve
     board_dict = {}
     #read in board to a board dict
     for r in range(0,len(board)):
