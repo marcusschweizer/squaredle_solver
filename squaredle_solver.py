@@ -99,7 +99,7 @@ def get_adj(board, input_word):
 
 
 
-def find_words(board, word, min_length, all_words):
+def find_words(board, all_possible_words, word, min_length):
     """recursive method to find all words on a board
     Uses nltk wordnet synsets test to establish if word exists
     Note squardle uses mariams dictionary so results may very
@@ -145,13 +145,13 @@ def find_words(board, word, min_length, all_words):
             bisect.insort(return_words, word_item)
             #return_words.append(word_item)
         
-        possible_words = [x for x in all_words if x.startswith(the_word)]
+        possible_words = [x for x in all_possible_words if x.startswith(the_word)]
         
         # if there is a word that starts with this combination of letters, continue - save time if not   
         if len(possible_words) > 0:
             
             # recursively call function on all extended words
-            next_words = find_words(board, word_item , min_length, possible_words)
+            next_words = find_words(board, possible_words, word_item , min_length)
         
             #append next words whilst checking that it doesn't exist in words    
             [bisect.insort(return_words,n) for n in next_words if n.word not in [w.word for w in return_words]]
@@ -161,6 +161,7 @@ def find_words(board, word, min_length, all_words):
 
 
 def solve(board, min_length):
+
     board_dict = {}
     #read in board to a board dict
     for r in range(0,len(board)):
@@ -177,7 +178,7 @@ def solve(board, min_length):
     
     print("solving...")
     tic = time.perf_counter()
-    results = find_words(board_dict, [], min_length, words.words())
+    results = find_words(board_dict, words.words(), [], min_length)
     toc = time.perf_counter()
     print(f"solved in {toc - tic:0.4f} seconds")
 
@@ -191,7 +192,7 @@ if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
     min_length = 4
-    board = board_sept_eleven
+    board = board_sept_twelve
     
     results = solve(board, min_length)
 
