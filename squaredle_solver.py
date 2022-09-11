@@ -1,6 +1,7 @@
 from nltk.corpus import words
 from nltk.corpus import wordnet
 import bisect
+import time
 
 
 board_first = [["a", "b", "x"],
@@ -115,9 +116,9 @@ def find_words(board, word, min_length, all_words):
     adj_words = []
     if word == []:
         #get starting positions
-        for pos in board_dict:
+        for pos in board:
             # need to have the unique starting position with otherwise similar letters are overwritten
-            new_word = Word(board_dict[pos], [pos]) 
+            new_word = Word(board[pos], [pos]) 
             adj_words.append(new_word)
     
     else:
@@ -159,12 +160,7 @@ def find_words(board, word, min_length, all_words):
     return return_words
 
 
-
-if __name__=="__main__":
-    print("\nWelcome to squaredle solver")
-
-    min_length = 4
-    board = board_sept_twelve
+def solve(board, min_length):
     board_dict = {}
     #read in board to a board dict
     for r in range(0,len(board)):
@@ -180,21 +176,29 @@ if __name__=="__main__":
         print(b)
     
     print("solving...")
+    tic = time.perf_counter()
     results = find_words(board_dict, [], min_length, words.words())
+    toc = time.perf_counter()
+    print(f"solved in {toc - tic:0.4f} seconds")
+
+    return results
+
+
+
+
+
+if __name__=="__main__":
+    print("\nWelcome to squaredle solver")
+
+    min_length = 4
+    board = board_sept_eleven
+    
+    results = solve(board, min_length)
 
     print('\nResults, found %d words: \nfirst position - word' % (len(results)))
     for w in results:
-        print('%s - %s\n' % (w.positions[0], w.word))
+        print('%s - %s' % (w.positions[0], w.word))
 
-
-    if False:
-        #testing adjacent function
-        pos = (1,2)
-        word = Word(board_dict[pos],[pos])
-        print(word)
-        adj_words = get_adj(board_dict,word)
-        for aword in adj_words:
-            print(aword)
 
 
 
