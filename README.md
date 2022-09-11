@@ -5,7 +5,7 @@
 
 This is a script to autmatically, and recursively, solve Squardles!
 
-https://Squaredle.app
+[https://Squaredle.app](https://Squaredle.app)
 
 You must manually enter the board as a 2d array and select that board at the top of __main__
 
