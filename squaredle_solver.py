@@ -2,6 +2,7 @@ from nltk.corpus import words
 from nltk.corpus import wordnet
 import bisect
 import time
+import os
 
 
 board_first = [["a", "b", "x"],
@@ -43,6 +44,14 @@ board_sept_twelve = [
 ["p", "m", "y", "o", "v"],
 ["p", "i", "l", "i", "t"],
 ["c", "j", "e", "s", "o"]
+]
+
+board_special_reddit = [
+["b", "p", "h", "e", "r"],
+["l", "a", "s", "m", "e"],
+["c", "o", "h", "a", "y"],
+["n", "a", "t", "w", "l"],
+["s", "f", "r", "t", "s"]
 ]
 
 
@@ -139,7 +148,7 @@ def find_words(board, all_possible_words, word, min_length):
         # if the word is a real word, is long enough, and isn't already in the list, add it, you found a word!
         # xxx should use same dictionary as Squardle!
         # xxx found a couple of words in squardle not in wordnet, like carb or synth!
-        if len(the_word) >= min_length and wordnet.synsets(the_word) and the_word not in [w.word for w in return_words]:
+        if len(the_word) >= min_length and the_word in all_possible_words and the_word not in [w.word for w in return_words]:
             # yay!
             debug and print(word_item)
             bisect.insort(return_words, word_item)
@@ -172,13 +181,21 @@ def solve(board, min_length):
             if letter != "":
                 board_dict[pos] =  letter
 
+    #read the word list
+    scrabble_file = "words/Collins Scrabble Words (2019).txt"
+
+    with open(os.path.join(os.path.dirname(__file__), scrabble_file)) as f:
+        all_words = [line.strip().lower() for line in f.readlines()[1:] if len(line.strip()) >= min_length]
+
+    print('Loaded %d words from %s' %(len(all_words), scrabble_file))
+
     print('Loaded %dx%d board' % (len(board), len(board[0])) )
     for b in board:
         print(b)
     
     print("solving...")
     tic = time.perf_counter()
-    results = find_words(board_dict, words.words(), [], min_length)
+    results = find_words(board_dict, all_words, [], min_length)
     toc = time.perf_counter()
     print(f"solved in {toc - tic:0.4f} seconds")
 
@@ -192,7 +209,7 @@ if __name__=="__main__":
     print("\nWelcome to squaredle solver")
 
     min_length = 4
-    board = board_sept_twelve
+    board = board_special_reddit
     
     results = solve(board, min_length)
 
