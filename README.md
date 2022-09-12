@@ -12,7 +12,6 @@ You must manually enter the board as a 2d array and select that board at the top
 The script will recursively run through all word combinations to find all the possible words on the board
 
 # todo
-- use same dictionary as squaredle
 - divide core words from "bonus" words
 - download latest board from squaredle.app automatically
 - output solutions onto squaredle.app automatically
