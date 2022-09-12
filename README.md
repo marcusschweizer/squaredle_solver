@@ -17,8 +17,5 @@ The script will recursively run through all word combinations to find all the po
 - output solutions onto squaredle.app automatically
 
 
-# prerequisits
-- you may have to download nltk wordnet dictionary to your python environment: nltk.download('wordnet')
-
 
 
