@@ -11,9 +11,6 @@ You must manually enter the board as a 2d array and select that board at the top
 
 The script will recursively run through all word combinations to find all the possible words on the board
 
-# issues
-- It does not use the same dictionary as Squardle, i understand Squaredle uses scrabble dictionary or mariam webster?
-
 # todo
 - use same dictionary as squaredle
 - divide core words from "bonus" words
